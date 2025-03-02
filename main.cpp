@@ -19,6 +19,10 @@ int generateMenu();
 // Prototipos de calculo
 vector<double> createVector(int);
 double calculateMagnitude(const vector<double> &);
+vector<double> unitVector(const vector<double> &);
+double radiansToDegrees(double);
+double degreesToRadians(double);
+void calculateDirection(const vector<double> &);
 
 int main() {
 	bool exit = false;
@@ -33,13 +37,18 @@ int main() {
 			// Calcular magnitud de un vector
 			generateTitle("Calcular magnitud de un vector");
 			vectores.push_back(createVector(validateVectorLength("Ingresa la longitud del vector")));
-            cout << "La magnitud del vector es: " << calculateMagnitude(vectores[0]) << endl;
+			cout << "La magnitud del vector es: " << calculateMagnitude(vectores[0]) << endl;
 			break;
 		case 2:
-			// Calcular vector unitario
+			generateTitle("Calcular si un vector es unitario");
+			vectores.push_back(createVector(validateVectorLength("Ingresa la longitud del vector")));
+			unitVector(vectores[0]);
 			break;
 		case 3:
 			// Calcular direccion de un vector
+			generateTitle("Calcular la direccion de un vector");
+			vectores.push_back(createVector(validateVectorLength("Ingresa la longitud del vector")));
+			calculateDirection(vectores[0]);
 			break;
 		case 4:
 			// Calcular suma de vectores
@@ -104,7 +113,7 @@ void pauseProgram(const string &mensaje) {
 }
 
 template <typename T> T validateOption(const string &message) {
-	int option = 0;
+	T option = 0;
 
 	while (true) {
 		cout << message << ": ";
@@ -188,4 +197,58 @@ double calculateMagnitude(const vector<double> &vec) {
 	}
 
 	return sqrt(magnitude);
+}
+
+vector<double> unitVector(const vector<double> &vec) {
+	double magnitude = calculateMagnitude(vec);
+	vector<double> uvector;
+
+	if (magnitude == 0) {
+		cout << "El vector es un vector nulo, no se puede calcular el vector unitario." << endl;
+		return vec;
+	}
+
+	if (magnitude == 1) {
+		cout << "El vector es un vector unitario." << endl;
+		return vec;
+	}
+
+	cout << "El vector no es unitario." << endl;
+	cout << "Encontrando el vector unitario..." << endl;
+	cout << "U =  (";
+
+	for (int i = 0; i < vec.size(); i++) {
+		cout << i << "/" << magnitude << ((i < vec.size() - 1) ? ", " : ")");
+		uvector.push_back(vec[i] / magnitude);
+	}
+
+	cout << endl;
+	return uvector;
+}
+
+double radiansToDegrees(double radians) { return radians * (180 / M_PI); }
+double degreesToRadians(double degrees) { return degrees * (M_PI / 180); }
+
+void calculateDirection(const vector<double> &vec) {
+	double magnitude = calculateMagnitude(vec);
+	vector<double> uvector;
+	double angulo = 0;
+
+	if (magnitude == 0) {
+		cout << "El vector es un vector nulo, no se puede calcular la direccion." << endl;
+		return;
+	}
+
+	uvector = unitVector(vec);
+
+	cout << "\nLa direccion del vector es: " << endl;
+
+	for (size_t i = 0; i < uvector.size(); i++) {
+		char letter = 'A' + (i % 26);
+		angulo = acos(uvector[i]);
+
+		cout << letter << " = " << angulo << " radianes" << endl;
+		cout << letter << " = " << radiansToDegrees(angulo) << " grados" << endl;
+		cout << endl;
+	}
 }
