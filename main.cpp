@@ -26,13 +26,20 @@ void calculateDirection(const vector<double> &);
 void vectorAddition(const vector<vector<double>> &);
 void vectorSubtraction(const vector<vector<double>> &);
 double dotProduct(const vector<vector<double>> &);
+double calculateAngleBetweenVectors(const vector<vector<double>> &);
+bool orthogonalVector(const vector<vector<double>> &);
+bool parallelVector(const vector<vector<double>> &);
 
 int main() {
 	bool exit = false;
-	int option = 0, longitud = 0, vs = 0;
+	int option = 0, lengthvec, vs;
+	string message;
 	vector<vector<double>> vectores;
 
 	while (!exit) {
+		lengthvec = 0;
+		vs = 0;
+		message = "";
 		option = generateMenu();
 
 		switch (option) {
@@ -57,10 +64,10 @@ int main() {
 			// Calcular suma de vectores
 			generateTitle("Calcular la suma de vectores");
 			vs = validateVectorLength("Ingrese la cantidad de vectores a sumar");
-			longitud = validateVectorLength("Ingresa la longitud de los vectores");
+			lengthvec = validateVectorLength("Ingresa la longitud de los vectores");
 
 			for (int i = 0; i < vs; i++) {
-				vectores.push_back(createVector(longitud));
+				vectores.push_back(createVector(lengthvec));
 			}
 
 			vectorAddition(vectores);
@@ -69,10 +76,10 @@ int main() {
 			// Calcular resta de vectores
 			generateTitle("Calcular la resta de vectores");
 			vs = validateVectorLength("Ingrese la cantidad de vectores a restar");
-			longitud = validateVectorLength("Ingresa la longitud de los vectores");
+			lengthvec = validateVectorLength("Ingresa la longitud de los vectores");
 
 			for (int i = 0; i < vs; i++) {
-				vectores.push_back(createVector(longitud));
+				vectores.push_back(createVector(lengthvec));
 			}
 
 			vectorSubtraction(vectores);
@@ -81,22 +88,54 @@ int main() {
 			// Calcular producto escalar de vectores
 			generateTitle("Calcular el producto escalar de vectores");
 			vs = validateVectorLength("Ingrese la cantidad de vectores a multiplicar");
-			longitud = validateVectorLength("Ingresa la longitud de los vectores");
+			lengthvec = validateVectorLength("Ingresa la longitud de los vectores");
 
 			for (int i = 0; i < vs; i++) {
-				vectores.push_back(createVector(longitud));
+				vectores.push_back(createVector(lengthvec));
 			}
 
 			cout << "El producto escalar de los vectores es: " << dotProduct(vectores) << endl;
 			break;
 		case 7:
 			// Calcular angulo entre dos vectores
+			generateTitle("Calcular el angulo entre dos vectores");
+			lengthvec = validateVectorLength("Ingresa la longitud de los vectores");
+
+			for (int i = 0; i < 2; i++) {
+				vectores.push_back(createVector(lengthvec));
+			}
+
+			cout << "El angulo entre los dos vectores es: " << endl;
+			cout << calculateAngleBetweenVectors(vectores) << " radianes" << endl;
+			cout << radiansToDegrees(calculateAngleBetweenVectors(vectores)) << " grados" << endl;
 			break;
 		case 8:
 			// Calcular si dos vectores son ortogonales
+			generateTitle("Calcular si dos vectores son ortogonales");
+			lengthvec = validateVectorLength("Ingresa la longitud de los vectores");
+
+			for (int i = 0; i < 2; i++) {
+				vectores.push_back(createVector(lengthvec));
+			}
+
+			message = "Los vectores son ";
+			message += (orthogonalVector(vectores)) ? "ortogonales" : "no ortogonales";
+
+			cout << message << endl;
 			break;
 		case 9:
 			// Calcular si dos vectores son paralelos
+			generateTitle("Calcular si dos vectores son paralelos");
+			lengthvec = validateVectorLength("Ingresa la longitud de los vectores");
+
+			for (int i = 0; i < 2; i++) {
+				vectores.push_back(createVector(lengthvec));
+			}
+
+			message = "Los vectores son ";
+			message += (parallelVector(vectores)) ? "paralelos" : "no paralelos";
+
+			cout << message << endl;
 			break;
 		case 10:
 			// Calcular proyeccion de un vector sobre otro
@@ -331,4 +370,36 @@ double dotProduct(const vector<vector<double>> &vectors) {
 	}
 
 	return result;
+}
+
+double calculateAngleBetweenVectors(const vector<vector<double>> &vectors) {
+	double angle = 0, product = dotProduct(vectors), magnitudes = 1;
+
+	for (const auto &vec : vectors) {
+		magnitudes *= calculateMagnitude(vec);
+	}
+
+	angle = acos(product / magnitudes);
+
+	return angle;
+}
+
+bool orthogonalVector(const vector<vector<double>> &vectors) {
+	double angle = calculateAngleBetweenVectors(vectors);
+
+	cout << "El angulo entre los dos vectores es: " << angle << " radianes" << endl;
+	angle = radiansToDegrees(angle);
+	cout << "El angulo entre los dos vectores es: " << angle << " grados" << endl;
+
+	return (angle == 90);
+}
+
+bool parallelVector(const vector<vector<double>> &vectors) {
+	double angle = calculateAngleBetweenVectors(vectors);
+
+	cout << "El angulo entre los dos vectores es: " << angle << " radianes" << endl;
+	angle = radiansToDegrees(angle);
+	cout << "El angulo entre los dos vectores es: " << angle << " grados" << endl;
+
+	return (angle == 0);
 }
