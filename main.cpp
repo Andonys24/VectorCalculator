@@ -29,6 +29,7 @@ double dotProduct(const vector<vector<double>> &);
 double calculateAngleBetweenVectors(const vector<vector<double>> &);
 bool orthogonalVector(const vector<vector<double>> &);
 bool parallelVector(const vector<vector<double>> &);
+vector<double> calculateProjection(const vector<vector<double>> &);
 
 int main() {
 	bool exit = false;
@@ -139,6 +140,14 @@ int main() {
 			break;
 		case 10:
 			// Calcular proyeccion de un vector sobre otro
+			generateTitle("Calcular proyeccion de un vector sobre otro");
+			lengthvec = validateVectorLength("Ingresa la longitud de los vectores");
+
+			for (int i = 0; i < 2; i++) {
+				vectores.push_back(createVector(lengthvec));
+			}
+
+			calculateProjection(vectores);
 			break;
 		case 11:
 			// Calcular producto vectorial o producto cruz
@@ -402,4 +411,32 @@ bool parallelVector(const vector<vector<double>> &vectors) {
 	cout << "El angulo entre los dos vectores es: " << angle << " grados" << endl;
 
 	return (angle == 0);
+}
+
+vector<double> calculateProjection(const vector<vector<double>> &vec) {
+	vector<double> projection, w;
+	double product, magnitude;
+
+	product = dotProduct(vec);
+	magnitude = pow(calculateMagnitude(vec[1]), 2);
+
+	for (size_t i = 0; i < vec[1].size(); i++) {
+		char letter = 'A' + (i % 26);
+
+		projection.push_back((product / magnitude) * vec[1][i]);
+		cout << "La proyeccion de " << letter << " sobre el vector es: " << projection[i] << endl;
+	}
+
+	cout << endl;
+
+	for (size_t i = 0; i < vec[1].size(); i++) {
+		char letter = 'A' + (i % 26);
+
+		w.push_back(vec[0][i] - projection[i]);
+		cout << "El vector W es: " << letter << " = " << w[i] << endl;
+	}
+
+	cout << endl;
+
+	return projection;
 }
