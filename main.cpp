@@ -12,7 +12,7 @@ using namespace std;
 void cleanConsole();
 void pauseProgram(const string &mensaje = "continuar");
 template <typename T> T validateOption(const string &);
-int validateVectorLength(const string &);
+int validateVectorLength(const string &, const int minimum = 2);
 void generateTitle(const string &);
 int generateMenu();
 
@@ -23,10 +23,13 @@ vector<double> unitVector(const vector<double> &);
 double radiansToDegrees(double);
 double degreesToRadians(double);
 void calculateDirection(const vector<double> &);
+void vectorAddition(const vector<vector<double>> &);
+void vectorSubtraction(const vector<vector<double>> &);
+double dotProduct(const vector<vector<double>> &);
 
 int main() {
 	bool exit = false;
-	int option = 0;
+	int option = 0, longitud = 0, vs = 0;
 	vector<vector<double>> vectores;
 
 	while (!exit) {
@@ -52,12 +55,39 @@ int main() {
 			break;
 		case 4:
 			// Calcular suma de vectores
+			generateTitle("Calcular la suma de vectores");
+			vs = validateVectorLength("Ingrese la cantidad de vectores a sumar");
+			longitud = validateVectorLength("Ingresa la longitud de los vectores");
+
+			for (int i = 0; i < vs; i++) {
+				vectores.push_back(createVector(longitud));
+			}
+
+			vectorAddition(vectores);
 			break;
 		case 5:
 			// Calcular resta de vectores
+			generateTitle("Calcular la resta de vectores");
+			vs = validateVectorLength("Ingrese la cantidad de vectores a restar");
+			longitud = validateVectorLength("Ingresa la longitud de los vectores");
+
+			for (int i = 0; i < vs; i++) {
+				vectores.push_back(createVector(longitud));
+			}
+
+			vectorSubtraction(vectores);
 			break;
 		case 6:
 			// Calcular producto escalar de vectores
+			generateTitle("Calcular el producto escalar de vectores");
+			vs = validateVectorLength("Ingrese la cantidad de vectores a multiplicar");
+			longitud = validateVectorLength("Ingresa la longitud de los vectores");
+
+			for (int i = 0; i < vs; i++) {
+				vectores.push_back(createVector(longitud));
+			}
+
+			cout << "El producto escalar de los vectores es: " << dotProduct(vectores) << endl;
 			break;
 		case 7:
 			// Calcular angulo entre dos vectores
@@ -132,14 +162,14 @@ template <typename T> T validateOption(const string &message) {
 	return option;
 }
 
-int validateVectorLength(const string &message) {
+int validateVectorLength(const string &message, const int minimum) {
 	int length = 0;
 
-	while (length < 2) {
+	while (length < minimum) {
 		length = validateOption<int>(message);
 
-		if (length < 2) {
-			cout << "La longitud del vector debe ser mayor a 1.\n";
+		if (length < minimum) {
+			cout << "La longitud del vector debe ser mayor a " << minimum << endl;
 		}
 	}
 
@@ -180,11 +210,15 @@ vector<double> createVector(int amount) {
 	vector<double> vec;
 	double value = 0;
 
+	cout << "Ingresa los valores del vector" << endl;
+
 	for (int i = 0; i < amount; i++) {
 		value = validateOption<double>("Ingresa el valor del vector [" + to_string(i + 1) + "]");
 
 		vec.push_back(value);
 	}
+
+	cout << endl;
 
 	return vec;
 }
@@ -251,4 +285,50 @@ void calculateDirection(const vector<double> &vec) {
 		cout << letter << " = " << radiansToDegrees(angulo) << " grados" << endl;
 		cout << endl;
 	}
+}
+
+void vectorAddition(const vector<vector<double>> &vectors) {
+	vector<double> result = vectors[0];
+
+	for (size_t i = 1; i < vectors.size(); i++) {
+		for (size_t j = 0; j < vectors[i].size(); j++) {
+			result[j] += vectors[i][j];
+		}
+	}
+
+	cout << "La suma de los vectores es: (";
+	for (const auto &i : result) {
+		cout << i << ((&i != &result.back()) ? ", " : ")");
+	}
+
+	cout << endl;
+}
+
+void vectorSubtraction(const vector<vector<double>> &vectors) {
+	vector<double> result = vectors[0];
+
+	for (size_t i = 1; i < vectors.size(); i++) {
+		for (size_t j = 0; j < vectors[i].size(); j++) {
+			result[j] -= vectors[i][j];
+		}
+	}
+
+	cout << "La resta de los vectores es: (";
+	for (const auto &i : result) {
+		cout << i << ((&i != &result.back()) ? ", " : ")");
+	}
+
+	cout << endl;
+}
+
+double dotProduct(const vector<vector<double>> &vectors) {
+	double result = 0;
+
+	for (size_t i = 0; i < vectors.size() - 1; i++) {
+		for (size_t j = 0; j < vectors[0].size(); j++) {
+			result += vectors[i][j] * vectors[i + 1][j];
+		}
+	}
+
+	return result;
 }
